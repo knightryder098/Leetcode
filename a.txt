@@ -416,3 +416,123 @@ int main()
 	return 0;
 }
 
+//gobackn
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <math.h>
+
+#define WINDOW_SIZE 4
+#define TIMEOUT 4
+#define PACKET_SIZE 20
+#define NUM_PACKETS 15
+
+struct packet
+{
+  int seq_no;
+  char data[PACKET_SIZE];
+};
+
+int main()
+{
+  struct packet packets[NUM_PACKETS];
+  int i, j, k;
+  srand(time(NULL));
+  for (i = 0; i < NUM_PACKETS; i++)
+  {
+    packets[i].seq_no = i;
+    for (j = 0; j < PACKET_SIZE; j++)
+    {
+      packets[i].data[j] = (char)(rand() % 26 + 'a');
+    }
+  }
+
+  int window_start = 0;
+  int window_end = WINDOW_SIZE - 1;
+  int expected_ack = 0;
+  int num_acks = 0;
+  int timeout_count = 0;
+
+  while (num_acks < NUM_PACKETS)
+  {
+    // Send packets in current window
+    for (i = window_start; i <= window_end && i < NUM_PACKETS; i++)
+    {
+      printf("Sending packet with sequence number %d\n", packets[i].seq_no);
+    }
+
+    // Simulate sending packets
+    for (i = window_start; i <= window_end && i < NUM_PACKETS; i++)
+    {
+      if (rand() % 10 > 1)
+      { // packet not lost
+        printf("Packet with sequence number %d sent successfully\n", packets[i].seq_no);
+      }
+      else
+      { // packet lost
+        printf("Packet with sequence number %d lost\n", packets[i].seq_no);
+      }
+    }
+
+    // Receive acks
+    for (i = window_start; i <= window_end && i < NUM_PACKETS; i++)
+    {
+      if (rand() % 10 > 1)
+      { // ack not lost
+        if (packets[i].seq_no == expected_ack)
+        {
+          printf("Received ack for packet with sequence number %d\n", packets[i].seq_no);
+          num_acks++;
+          expected_ack++;
+          timeout_count = 0;
+        }
+        else
+        {
+          printf("Received out-of-order ack for packet with sequence number %d\n", packets[i].seq_no);
+        }
+      }
+      else
+      { // ack lost
+        printf("Ack for packet with sequence number %d lost\n", packets[i].seq_no);
+      }
+    }
+
+    // Update window
+    if (expected_ack <= NUM_PACKETS - WINDOW_SIZE)
+    {
+      if (num_acks == window_end - window_start + 1)
+      {
+        window_start += num_acks;
+        window_end += num_acks;
+      }
+    }
+    else
+    {
+      if (num_acks == NUM_PACKETS - expected_ack)
+      {
+        window_end = NUM_PACKETS - 1;
+        window_start = window_end - (WINDOW_SIZE - 1);
+      }
+    }
+
+    // Timeout
+    if (timeout_count >= TIMEOUT)
+    {
+      printf("Timeout occurred, resending packets in window\n");
+      timeout_count = 0;
+    }
+    else
+    {
+      timeout_count++;
+    }
+  }
+
+  printf("All packets successfully transmitted and acknowledged\n");
+
+  return 0;
+}
+
+
+//

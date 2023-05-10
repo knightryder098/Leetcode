@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "*.cpp": "cpp",
+        ".html": "html",
+        ".java": "java",
+        "cstdlib": "c",
+        "netdb.h": "c",
+        "ostream": "c"
+    }
+}

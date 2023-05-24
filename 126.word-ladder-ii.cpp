@@ -74,7 +74,9 @@ class Solution
 public:
     void makepath(vector<string>&curr,string endWord,unordered_map<string,set<string>>&graph,vector<vector<string>>&ans,int len,unordered_set<string>&visited){
         if(curr.size()==len and curr.back()==endWord){
-            ans.push_back(curr);
+            vector<string>tmp=curr;
+            reverse(tmp.begin(),tmp.end());
+            ans.push_back(tmp);
         }
 
         for(auto word:graph[curr.back()]){
@@ -120,6 +122,7 @@ public:
             {
                 string tmp = curr;
                 for (char ch = 'a'; ch <= 'z'; ch++)
+                
                 {
                     tmp[i] = ch;
                     if (dict.find(tmp) != dict.end())
@@ -142,12 +145,27 @@ public:
             step++;
         }
 
+        unordered_map<string,set<string>>revGraph;
+
+
+        // for (auto x : graph)
+        // {
+        //     cout << x.first << ":";
+        //     for (auto xx : x.second)
+        //     {
+        //         cout << xx << " ";
+        //         revGraph[xx].insert(x.first);
+        //     }
+        //     cout << '\n';
+            
+        // }
+
         vector<vector<string>>ans;
         visited.clear();
         vector<string>curr;
-        curr.push_back(beginWord);
-        visited.insert(beginWord);
-        makepath(curr,endWord,graph,ans,len,visited);
+        curr.push_back(endWord);
+        visited.insert(endWord);
+        makepath(curr,beginWord,revGraph,ans,len,visited);
         // cout<<len;
         return ans;
     }

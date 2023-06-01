@@ -78,7 +78,13 @@
 // @lc code=start
 class Solution {
 public:
-  void dfs(string s,string e,map<string,double>& mp,map<string,vector<string>>& graph,double& val,map<string,int>& vis,bool& check){
+       
+// TC - (N + Q*V)
+// SC - (N + V)
+// Q is the number of queries and V is the number of vertices in the graph,N is the number of equations.
+
+
+void dfs(string s,string e,map<string,double>& mp,map<string,vector<string>>& graph,double& val,map<string,int>& vis,bool& check){
 
         vis[s]=1;
     

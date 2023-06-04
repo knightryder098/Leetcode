@@ -91,7 +91,22 @@ public:
 class Solution {
 public:
     Node* connect(Node* root) {
-        
+        if(!root)return nullptr;
+        queue<Node*>pq;
+        pq.push(root);
+        while(pq.size()){
+            Node* last=nullptr;
+            for(int i=pq.size();i>0;i--){
+                Node * curr=pq.front();pq.pop();
+                curr->next=last;
+                last=curr;
+                if(curr->right){
+                    pq.push(curr->right);
+                    pq.push(curr->left);
+                }
+            }
+        }
+        return root;
     }
 };
 // @lc code=end
